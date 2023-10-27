@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="tw.ispan" />
+
+	<bean id="datasource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url"
+			value="jdbc:sqlserver://localhost:1433;databaseName=LeonPower;encrypt=true;trustServerCertificate=true" />
+		<property name="username" value="watcher" />
+		<property name="password" value="Ji3vu3cj0"/>
+	</bean>
+
+	<bean id="props"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location" value="classpath:tree.properties" />
+	</bean>
+
+<!-- 	<bean id="worker1" class="tw.ispan.model.Worker"> -->
+<!-- 		<property name="id" value="1001" /> -->
+<!-- 		<property name="name" value="judy" /> -->
+<!-- 		<property name="title" value="engineer" /> -->
+<!-- 	</bean> -->
+
+<!-- 	<bean id="worker2" class="tw.ispan.model.Worker"> -->
+<!-- 		<property name="id" value="1002" /> -->
+<!-- 		<property name="name" value="jack" /> -->
+<!-- 		<property name="title" value="sales" /> -->
+<!-- 	</bean> -->
+
+	<bean id="toyotaTruck"
+		class="tw.ispan.model.TruckBeanStaticFactory"
+		factory-method="getTruckBean">
+		<constructor-arg value="1" />
+	</bean>
+	<bean id="nissanTruck"
+		class="tw.ispan.model.TruckBeanStaticFactory"
+		factory-method="getTruckBean">
+		<constructor-arg value="2" />
+	</bean>
+
+	<bean id="TruckBeanFactory"
+		class="tw.ispan.model.TruckBeanFactory">
+		<property name="map">
+			<map>
+				<entry key="5">
+					<bean class="tw.ispan.model.TruckBean">
+						<property name="id" value="7" />
+						<property name="brand" value="tesla" />
+					</bean>
+				</entry>
+				<entry key="6">
+					<bean class="tw.ispan.model.TruckBean">
+						<property name="id" value="8" />
+						<property name="brand" value="mercedes-benz" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="teslaTruck" factory-bean="TruckBeanFactory"
+		factory-method="getTruckBean">
+		<constructor-arg value="5" />
+	</bean>
+
+	<bean id="benzTruck" factory-bean="TruckBeanFactory"
+		factory-method="getTruckBean">
+		<constructor-arg value="6" />
+	</bean>
+
+	<!-- 下面對bean的註冊就等於LogProvider logProvider = new LogProvider(); -->
+	<bean id="logProvider" class="tw.ispan.util.LogProvider" />
+
+	<!-- String string0 = new String("adios"); constructor dependency injection -->
+	<bean id="string0" name="string1, string2"
+		class="java.lang.String">
+		<constructor-arg value="adios" />
+	</bean>
+
+	<!-- LoginDao loginDao = new LoginDao(); -->
+	<bean id="loginDao" class="tw.ispan.model.LoginDao" />
+
+	<!-- LoginService loginService1 = new LoginService(loginDao); -->
+	<bean id="loginService1" class="tw.ispan.model.LoginService">
+		<constructor-arg ref="loginDao" />
+	</bean>
+
+	<!--LoginService loginService2 = new LoginService(); -->
+	<!-- loginService2.setLoginDao(loginDao); -->
+	<bean id="loginService2" class="tw.ispan.model.LoginService">
+		<!-- name="loginDao"(loginDao為物件裡面屬性的名字) -->
+		<!-- ref="loginDao"(loginDao為上面LoginDao註冊的名字) -->
+		<property name="loginDao" ref="loginDao"></property>
+	</bean>
+
+	<!-- Animal animal1 = new Animal(100, "tiger", "asia") -->
+	<bean id="animal1" class="tw.ispan.model.Animal">
+		<constructor-arg index="0" value="100" />
+		<constructor-arg index="1" value="tiger" />
+		<constructor-arg index="2" value="asia" />
+	</bean>
+
+	<bean id="animal2" class="tw.ispan.model.Animal">
+		<property name="id" value="101"></property>
+		<property name="name" value="elephant"></property>
+		<property name="continent" value="africa"></property>
+	</bean>
+
+	<bean id="date1" class="java.util.Date"></bean>
+
+	<!-- 引用在xml檔案裡的物件都要用ref -->
+	<bean id="animal3" class="tw.ispan.model.Animal" p:id="102"
+		p:name="monkey" p:continent="asia" p:date-ref="date1" />
+
+</beans>

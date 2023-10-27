@@ -1,0 +1,26 @@
+package tw.ispan.model;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+
+@Repository("wDao")
+public class WorkerDao {
+
+//	@Autowired
+//	@Qualifier("worker1")
+	private Worker worker;
+
+	public WorkerDao() {
+	}
+
+//	也有放在建構子上的方法
+	@Autowired
+	public WorkerDao(@Qualifier("worker2")Worker worker) {
+		this.worker = worker;
+	}
+
+	public void showDetails() {
+		System.out.println(worker.getId() + " " + worker.getName() + " " + worker.getTitle());
+	}
+}
